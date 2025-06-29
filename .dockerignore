@@ -1,0 +1,43 @@
+# Docker ignore file to reduce build context size
+
+# Target directory (will be built inside container)
+target/
+
+# IDE files
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Docker files
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Documentation
+README.md
+*.md
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Maven local repository
+.m2/
+
+# Application specific
+*.mv.db
+*.trace.db 

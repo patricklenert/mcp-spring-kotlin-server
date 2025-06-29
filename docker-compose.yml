@@ -1,0 +1,75 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: memvid-postgres
+    environment:
+      POSTGRES_DB: memvid
+      POSTGRES_USER: memvid
+      POSTGRES_PASSWORD: memvid123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - memvid-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U memvid -d memvid"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Spring Boot Application
+  memvid-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: memvid-app
+    environment:
+      # Spring profiles
+      SPRING_PROFILES_ACTIVE: docker
+      
+      # Database connection
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/memvid
+      SPRING_DATASOURCE_USERNAME: memvid
+      SPRING_DATASOURCE_PASSWORD: memvid123
+      
+      # JPA settings
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      
+      # MCP Server settings
+      SPRING_AI_MCP_SERVER_TRANSPORT_STDIO_ENABLED: true
+      SPRING_AI_MCP_SERVER_TRANSPORT_SSE_ENABLED: true
+      SPRING_AI_MCP_SERVER_TRANSPORT_SSE_PATH: /mcp/sse
+      
+      # Application settings
+      SERVER_PORT: 8080
+      LOGGING_LEVEL_COM_MEMVID: INFO
+      
+    ports:
+      - "8080:8080"
+    networks:
+      - memvid-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    volumes:
+      # Mount for storing generated video files and indexes
+      - ./data:/app/data
+
+networks:
+  memvid-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local 
