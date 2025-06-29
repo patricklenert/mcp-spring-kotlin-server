@@ -85,7 +85,6 @@ Connect any MCP client to: `http://localhost:8080/mcp`
 Example MCP client usage (Python):
 ```python
 # This is how the MCP tools would be used from a client
-# (Similar to the memvid library interface you mentioned)
 
 # Create video memory
 create_video_memory(title="Important Lecture", description="AI and Machine Learning basics")
