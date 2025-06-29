@@ -11,3 +11,5 @@
 .env.test
 .env.production
 DOCKER_DEPLOYMENT.md
+target/classes/
+target/test-classes/

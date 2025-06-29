@@ -30,11 +30,14 @@ spring:
   # GraphQL Configuration
   graphql:
     graphiql:
-      enabled: true
-      path: /graphiql
+      enabled: false
     path: /graphql
     websocket:
       path: /graphql
+    cors:
+      allowed-origins: "*"
+      allowed-methods: GET, POST
+      allowed-headers: "*"
   
   # MCP Server Configuration
   ai:
@@ -69,4 +72,47 @@ management:
         include: health,info,metrics,mcp
   endpoint:
     health:
-      show-details: always 
+      show-details: always
+
+---
+# Docker Profile Configuration
+spring:
+  config:
+    activate:
+      on-profile: docker
+  
+  # PostgreSQL Database Configuration for Docker
+  datasource:
+    url: jdbc:postgresql://postgres:5432/memvid
+    driver-class-name: org.postgresql.Driver
+    username: memvid
+    password: memvid123
+  
+  # JPA Configuration for PostgreSQL
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  
+  # GraphQL Configuration for Docker
+  graphql:
+    graphiql:
+      enabled: false
+    path: /graphql
+    cors:
+      allowed-origins: "*"
+      allowed-methods: GET, POST
+      allowed-headers: "*"
+
+# Logging Configuration for Docker
+logging:
+  level:
+    com.memvid: INFO
+    org.springframework.ai.mcp: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN 

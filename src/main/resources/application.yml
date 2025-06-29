@@ -30,11 +30,14 @@ spring:
   # GraphQL Configuration
   graphql:
     graphiql:
-      enabled: true
-      path: /graphiql
+      enabled: false
     path: /graphql
     websocket:
       path: /graphql
+    cors:
+      allowed-origins: "*"
+      allowed-methods: GET, POST
+      allowed-headers: "*"
   
   # MCP Server Configuration
   ai:
@@ -95,6 +98,16 @@ spring:
         format_sql: false
         dialect: org.hibernate.dialect.PostgreSQLDialect
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  
+  # GraphQL Configuration for Docker
+  graphql:
+    graphiql:
+      enabled: false
+    path: /graphql
+    cors:
+      allowed-origins: "*"
+      allowed-methods: GET, POST
+      allowed-headers: "*"
 
 # Logging Configuration for Docker
 logging:
