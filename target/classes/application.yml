@@ -1,0 +1,72 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: memvid-mcp-server
+  
+  # Database Configuration
+  datasource:
+    url: jdbc:h2:mem:memvid
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  
+  # JPA Configuration
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+  
+  # GraphQL Configuration
+  graphql:
+    graphiql:
+      enabled: true
+      path: /graphiql
+    path: /graphql
+    websocket:
+      path: /graphql
+  
+  # MCP Server Configuration
+  ai:
+    mcp:
+      server:
+        enabled: true
+        name: memvid-server
+        version: "1.0.0"
+        description: "Video Memory Management MCP Server"
+        capabilities:
+          tools: true
+          resources: true
+          prompts: true
+          logging: true
+        webmvc:
+          enabled: true
+          endpoint: "/mcp"
+
+# Logging Configuration
+logging:
+  level:
+    com.memvid: DEBUG
+    org.springframework.ai.mcp: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# Management Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,mcp
+  endpoint:
+    health:
+      show-details: always 

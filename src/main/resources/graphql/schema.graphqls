@@ -1,0 +1,222 @@
+type Query {
+    """Get all video memories with pagination"""
+    videoMemories(page: Int = 0, size: Int = 20): VideoMemoryPage!
+    
+    """Get a specific video memory by ID with all details"""
+    videoMemory(id: ID!): VideoMemoryDetail!
+    
+    """Search video memories by title or description"""
+    searchVideoMemories(query: String!): [VideoMemory!]!
+    
+    """Get video memories by status"""
+    videoMemoriesByStatus(status: VideoMemoryStatus!): [VideoMemory!]!
+    
+    """Get system status and statistics"""
+    systemStatus: SystemStatus!
+}
+
+type Mutation {
+    """Create a new video memory"""
+    createVideoMemory(title: String!, description: String): VideoMemory!
+    
+    """Add text chunks to an existing video memory"""
+    addTextChunks(videoMemoryId: ID!, chunks: [String!]!): VideoMemory!
+    
+    """Build the video memory index for searching and chatting"""
+    buildVideoIndex(videoMemoryId: ID!): VideoMemory!
+    
+    """Chat with a built video memory"""
+    chatWithMemory(videoMemoryId: ID!, question: String!): ChatResponse!
+    
+    """Delete a video memory and all its data"""
+    deleteVideoMemory(id: ID!): Boolean!
+}
+
+type VideoMemory {
+    """Unique identifier for the video memory"""
+    id: ID!
+    
+    """Title of the video memory"""
+    title: String!
+    
+    """Optional description"""
+    description: String
+    
+    """Generated video filename"""
+    videoFilename: String!
+    
+    """Generated index filename"""
+    indexFilename: String!
+    
+    """Current status of the video memory"""
+    status: VideoMemoryStatus!
+    
+    """Total number of text chunks"""
+    totalChunks: Int!
+    
+    """Creation timestamp"""
+    createdAt: String!
+    
+    """Last update timestamp"""
+    updatedAt: String!
+    
+    """Associated text chunks (loaded on demand)"""
+    textChunks: [TextChunk!]!
+    
+    """Memory index (loaded on demand)"""
+    memoryIndex: MemoryIndex
+}
+
+type VideoMemoryDetail {
+    """Unique identifier for the video memory"""
+    id: ID!
+    
+    """Title of the video memory"""
+    title: String!
+    
+    """Optional description"""
+    description: String
+    
+    """Generated video filename"""
+    videoFilename: String!
+    
+    """Generated index filename"""
+    indexFilename: String!
+    
+    """Current status of the video memory"""
+    status: VideoMemoryStatus!
+    
+    """Creation timestamp"""
+    createdAt: String!
+    
+    """Last update timestamp"""
+    updatedAt: String!
+    
+    """All text chunks"""
+    textChunks: [TextChunk!]!
+    
+    """Memory index if built"""
+    memoryIndex: MemoryIndex
+}
+
+type TextChunk {
+    """Unique identifier for the text chunk"""
+    id: ID!
+    
+    """Content of the text chunk"""
+    content: String!
+    
+    """Index position within the video memory"""
+    chunkIndex: Int!
+    
+    """Auto-generated summary"""
+    summary: String
+    
+    """Word count"""
+    wordCount: Int!
+    
+    """Type of the chunk"""
+    chunkType: String!
+    
+    """Creation timestamp"""
+    createdAt: String!
+}
+
+type MemoryIndex {
+    """Unique identifier for the memory index"""
+    id: ID!
+    
+    """Total number of chunks indexed"""
+    totalChunks: Int!
+    
+    """Total word count across all chunks"""
+    totalWords: Int!
+    
+    """Overall summary of the content"""
+    summary: String
+    
+    """Extracted keywords"""
+    keywords: [String!]!
+    
+    """Extracted topics"""
+    topics: [String!]!
+    
+    """Average words per chunk"""
+    averageWordsPerChunk: Float!
+    
+    """Index creation timestamp"""
+    createdAt: String!
+    
+    """Index last update timestamp"""
+    updatedAt: String!
+}
+
+type VideoMemoryPage {
+    """Video memories in this page"""
+    content: [VideoMemory!]!
+    
+    """Total number of elements across all pages"""
+    totalElements: Int!
+    
+    """Total number of pages"""
+    totalPages: Int!
+    
+    """Current page number (0-based)"""
+    currentPage: Int!
+    
+    """Size of this page"""
+    size: Int!
+}
+
+type SystemStatus {
+    """Count of video memories by status"""
+    statusCounts: StatusCounts!
+    
+    """Total number of video memories"""
+    totalMemories: Int!
+    
+    """Number of memories ready for chat"""
+    readyForChat: Int!
+    
+    """Number of memories currently processing"""
+    processing: Int!
+    
+    """Number of newly created memories"""
+    created: Int!
+    
+    """Number of memories with errors"""
+    error: Int!
+}
+
+type StatusCounts {
+    """Number of created memories"""
+    CREATED: Int!
+    
+    """Number of processing memories"""
+    PROCESSING: Int!
+    
+    """Number of built memories"""
+    BUILT: Int!
+    
+    """Number of error memories"""
+    ERROR: Int!
+}
+
+type ChatResponse {
+    """The response from chatting with the video memory"""
+    response: String!
+}
+
+enum VideoMemoryStatus {
+    """Initial state when memory is created"""
+    CREATED
+    
+    """Memory is being processed/indexed"""
+    PROCESSING
+    
+    """Memory is fully built and ready for use"""
+    BUILT
+    
+    """An error occurred during processing"""
+    ERROR
+} 
