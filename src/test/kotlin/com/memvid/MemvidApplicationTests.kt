@@ -65,8 +65,9 @@ class MemvidApplicationTests {
             "Deep learning uses neural networks for complex patterns."
         )
         
-        memvidService.addTextChunks(videoMemory.id!!, chunks)
-        val builtMemory = memvidService.buildVideoIndex(videoMemory.id)
+        val videoMemoryId = videoMemory.id!!
+        memvidService.addTextChunks(videoMemoryId, chunks)
+        val builtMemory = memvidService.buildVideoIndex(videoMemoryId)
         
         assertEquals(VideoMemoryStatus.BUILT, builtMemory.status)
         assertNotNull(builtMemory.memoryIndex)
@@ -84,10 +85,11 @@ class MemvidApplicationTests {
             "Spring Boot makes it easy to create stand-alone applications."
         )
         
-        memvidService.addTextChunks(videoMemory.id!!, chunks)
-        memvidService.buildVideoIndex(videoMemory.id)
+        val videoMemoryId = videoMemory.id!!
+        memvidService.addTextChunks(videoMemoryId, chunks)
+        memvidService.buildVideoIndex(videoMemoryId)
         
-        val response = memvidService.chatWithMemory(videoMemory.id, "What is Spring Boot?")
+        val response = memvidService.chatWithMemory(videoMemoryId, "What is Spring Boot?")
         
         assertNotNull(response)
         assertTrue(response.contains("Spring Boot"))
@@ -114,10 +116,13 @@ class MemvidApplicationTests {
         val memory1 = memvidService.createVideoMemory("Memory 1", "First memory")
         val memory2 = memvidService.createVideoMemory("Memory 2", "Second memory")
         
-        memvidService.addTextChunks(memory1.id!!, listOf("Content 1"))
-        memvidService.buildVideoIndex(memory1.id)
+        val memory1Id = memory1.id!!
+        val memory2Id = memory2.id!!
         
-        memvidService.addTextChunks(memory2.id!!, listOf("Content 2"))
+        memvidService.addTextChunks(memory1Id, listOf("Content 1"))
+        memvidService.buildVideoIndex(memory1Id)
+        
+        memvidService.addTextChunks(memory2Id, listOf("Content 2"))
         // Don't build index for memory2
         
         val createdMemories = memvidService.getVideoMemoriesByStatus(VideoMemoryStatus.CREATED)
