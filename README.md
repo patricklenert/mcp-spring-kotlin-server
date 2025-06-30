@@ -1,4 +1,4 @@
-# MCP Spring Server - Memvid
+# MCP Spring Server
 
 A comprehensive **Model Context Protocol (MCP) Server** built with **Spring Boot** and **Kotlin** that demonstrates video memory management functionality similar to the `memvid` concept. This project showcases key Spring Boot concepts including **JPA**, **WebMVC**, **Repositories**, **GraphQL**, and **MCP integration** using the official Spring AI MCP library.
 
